@@ -1,0 +1,9 @@
+{
+	"db1": {
+		"dbuser": "sdave",
+		"dbpassword": "shashank.519",
+		"host": "ds217349.mlab.com",
+		"port": "17349",
+		"database": "shopping"
+	}
+}
