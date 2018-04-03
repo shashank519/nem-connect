@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var registerUser = require('../src/models/registration.js');
+var registerationNewUser = require('../src/models/registration').registerUser;
+var findIfAnyUserExists = require('../src/models/registration').findIfUserExists;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -8,24 +9,31 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/register', function(req, resp){
-	console.log(req.body);
-	// registerUser(req.body, function(err, response){
-	// 	console.log('Hello world');
-	// 	if(err) {
-	// 		console.log('Hye buddy');
-	// 		resp.json({err: err});
-	// 	} else {
-	// 		console.log('Hello world');
-	// 		resp.json({"data": response});
-	// 	} 
-	// });
-	registerUser(req.body).then(function(err, response){
-		if(err) {
-			resp.json(err);
-		} else {
-			resp.json(response);
+	findIfAnyUserExists(req.body).then(function(response, err){
+		if(err) { resp.json(err)}
+		else {
+			if(response && response.firstName.length && response.firstName === req.body.firstName){
+				resp.send({'message': 'User alreasy exists. Try with another username.', errorWithSaving: 'User already exists.'})
+			} else {
+				registerationNewUser(req.body).then(function(err, response){
+					if(err) {
+						resp.json(err);
+					} else {
+						resp.json(response);
+					}
+				})
+			}
 		}
+	}).catch(function(e){
+		throw e;
 	})
+	// registerationUser(req.body).then(function(err, response){
+	// 	if(err) {
+	// 		resp.json(err);
+	// 	} else {
+	// 		resp.json(response);
+	// 	}
+	// })
 });
 
 module.exports = router;
