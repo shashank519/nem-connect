@@ -12,14 +12,14 @@ router.post('/register', function(req, resp){
 	findIfAnyUserExists(req.body).then(function(response, err){
 		if(err) { resp.json(err)}
 		else {
-			if(response && response.firstName.length && response.firstName === req.body.firstName){
-				resp.send({'message': 'User alreasy exists. Try with another username.', errorWithSaving: 'User already exists.'})
+			if(response && response.email.length && response.email === req.body.email){
+				resp.send({'message': 'User alreasy exists. Try with another email.', errorWithSaving: 'User already exists.'})
 			} else {
-				registerationNewUser(req.body).then(function(err, response){
+				registerationNewUser(req.body).then(function(response, err){
 					if(err) {
 						resp.json(err);
 					} else {
-						resp.json(response);
+						resp.json({'response': response, 'message': 'User registered successfully.'});
 					}
 				})
 			}

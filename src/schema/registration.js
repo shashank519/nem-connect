@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var registerSchema = new Schema({
   firstName: String,
   lastName: String,
-  age: Number,
+  email: String,
   address: String,
   mobile: Number
 });
