@@ -10,6 +10,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/register', function(req, resp){
 	findIfAnyUserExists(req.body).then(function(response, err){
+		console.log(response);
 		if(err) { resp.json(err)}
 		else {
 			if(response && response.email.length && response.email === req.body.email){
