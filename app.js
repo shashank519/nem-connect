@@ -4,9 +4,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+// var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var passportJWT = require('passport-jwt');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+
+var ExtractJwt = passportJWT.ExtractJwt;
+var JwtStrategy = passportJWT.Strategy;
 
 var dbConnect = require('./db.connect.js');
 
@@ -19,6 +25,26 @@ dbConnect.connect().then(function(res, err){
 
 var app = express();
 
+var jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'shashankdave'
+};
+
+var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, done){
+  console.log('Jwt received', jwt_payload);
+
+  var user = true;
+  if(user){
+    done(null, user);
+  } else {
+    done(null, false);
+  }
+})
+
+passport.use(strategy);
+
+app.use(passport.initialize());
+
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
@@ -27,7 +53,7 @@ var app = express();
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

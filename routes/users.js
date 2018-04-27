@@ -1,8 +1,17 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
+var passportJWT = require('passport-jwt');
+
+var ExtractJwt = passportJWT.ExtractJwt;
+
 var registerationNewUser = require('../src/models/registration').registerUser;
 var findIfAnyUserExists = require('../src/models/registration').findIfUserExists;
 
+var jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'shashankdave'
+}
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -36,5 +45,23 @@ router.post('/register', function(req, resp){
 	// 	}
 	// })
 });
+
+router.post('/login', function(req, resp){
+	if(req.body.email && req.body.password){
+		var email = req.body.email;
+		var password = req.body.password;
+	}
+	var user = {
+		email: 'shashank@gmail.com',
+		password: 'shashankdave'
+	};
+	if(user.email === 'shashank@gmail.com'){
+		var payload = {id: '12345'};
+		var token = jwt.sign(payload, jwtOptions.secretOrKey);
+		resp.json({msg: 'ok', token: token});
+	} else {
+		resp.status(401).json({'message': 'passwords did not match'});
+	}
+})
 
 module.exports = router;
