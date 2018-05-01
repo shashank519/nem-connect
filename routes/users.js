@@ -50,7 +50,7 @@ router.post("/login", function(req, resp) {
 			if (req.body.email === response.email) {
 				var payload = { email: response.email };
 				var token = jwt.sign(payload, jwtOptions.secretOrKey);
-				resp.json({ msg: "ok", token: token });
+				resp.status(200).json({ msg: "ok", token: token });
 			} else {
 				resp.status(401).json({ message: "passwords did not match" });
 			}
@@ -61,8 +61,8 @@ router.post("/login", function(req, resp) {
 	});
 });
 
-// for bearer strtg. use "bearer" at the place of "local".
-router.post("/secret", passport.authenticate("local", { session: false }), function(req, resp) {
+// for bearer strtgy. use "bearer" at the place of "local" and for jwtStrategy use "jwt" at the place of local.
+router.post("/secret", passport.authenticate("jwt", { session: false }), function(req, resp) {
     resp.json({ Hello: "Hello world" });
   }
 );

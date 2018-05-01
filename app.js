@@ -37,6 +37,21 @@ var jwtOptions = {
   secretOrKey: "shashankdave"
 };
 
+passport.use(new JwtStrategy(jwtOptions, function(jwt_payload, cb) {  //send bearer <token> while using jwtStrag. 
+  console.log('jwtoptions', jwt_payload);
+  findIfAnyUserExists({ email: jwt_payload.email }).then(function(response, err) {
+    if (err) {
+      return cb(err, false);
+    } else if (!response) {
+      return cb(null, false);
+    }
+    return cb(null, response);
+  })
+  .catch(function(e) {
+    return cb(null, { message: "Exception occured" });
+  });
+}));
+
 //-------------------- JWT Strategy -----------------------
 // var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, done){
 //   console.log('Jwt received', jwt_payload);
@@ -56,7 +71,7 @@ var jwtOptions = {
 //     findIfAnyUserExists({ email: "shashank@gmail.com" })
 //       .then(function(response, err) {
 //         if (err) {
-//           return cb(err);
+//           return cb(err, false);
 //         } else if (!response) {
 //           return cb(null, false);
 //         }
@@ -68,29 +83,29 @@ var jwtOptions = {
 //   })
 // );
 
-//------------------------ Locat Strategy ------------------------
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "email",
-      passwordField: "password"
-    },
-    function(username, password, cb) {
-      findIfAnyUserExists({ email: username })
-        .then(function(response, err) {
-          if (err) {
-            return cb(err);
-          } else if (!response) {
-            return cb(null, false);
-          }
-          return cb(null, response);
-        })
-        .catch(function(e) {
-          return cb(null, { message: "erroree" });
-        });
-    }
-  )
-);
+//------------------------ Local Strategy ------------------------
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "email",
+//       passwordField: "password"
+//     },
+//     function(username, password, cb) {
+//       findIfAnyUserExists({ email: username })
+//         .then(function(response, err) {
+//           if (err) {
+//             return cb(err);
+//           } else if (!response) {
+//             return cb(null, false);
+//           }
+//           return cb(null, response);
+//         })
+//         .catch(function(e) {
+//           return cb(null, { message: "erroree" });
+//         });
+//     }
+//   )
+// );
 
 app.use(passport.initialize());
 
