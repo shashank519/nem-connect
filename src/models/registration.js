@@ -47,7 +47,7 @@ const checkAndregisterUser = function(req, res){
 		}
 	})
 	.catch(function(e) {
-		throw e;
+		res.send({'message': 'Something went wrong. Please try again.'});
 	});
 }
 
@@ -56,18 +56,17 @@ const checkAndLoginUser = function(req, res){
 		if (err) {
 			res.json({ err: err });
 		} else {
-			console.log('Yaha p hai');
 			if (req.body.email === response.email) {
 				var payload = { email: response.email };
 				var token = jwt.sign(payload, jwtOptions.secretOrKey);
 				res.status(200).json({ msg: "ok", token: token });
 			} else {
-				res.status(401).json({ message: "passwords did not match" });
+				res.status(401).json({ message: "Passwords did not match." });
 			}
 		}
 	})
 	.catch(function(e) {
-		throw e;
+		res.send({'message': 'Wrong credentials'});
 	});
 }
 
