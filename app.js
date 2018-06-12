@@ -20,7 +20,14 @@ var findIfAnyUserExists = require("./src/models/registration").findIfUserExists;
 
 var dbConnect = require("./db.connect.js");
 
+var app = express();
+
 // console.log(dbConnect);
+app.use(logger("dev"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
 dbConnect.connect().then(function(res, err) {
   if (err) {
@@ -29,8 +36,6 @@ dbConnect.connect().then(function(res, err) {
     console.log("Connection with mongodb successful.");
   }
 });
-
-var app = express();
 
 var jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -115,11 +120,6 @@ app.use(passport.initialize());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
